@@ -28,7 +28,7 @@ public class User implements Serializable {
     private Date validate;
 
     @Column(unique = true)
-    private Integer nuit;
+    private String nuit;
 
     @Column(unique = true)
     private String phone;
@@ -58,7 +58,7 @@ public class User implements Serializable {
     }
 
     public User(Long id, String firstName, String lastName, String email, String idNumber,Date validate,
-                Integer nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
+                String nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
                 String username, String password) {
         this.id = id;
         this.firstName = firstName;
@@ -124,11 +124,11 @@ public class User implements Serializable {
         this.validate = validate;
     }
 
-    public Integer getNuit() {
+    public String getNuit() {
         return nuit;
     }
 
-    public void setNuit(Integer nuit) {
+    public void setNuit(String nuit) {
         this.nuit = nuit;
     }
 

@@ -32,7 +32,7 @@ public class UserDTO implements Serializable {
 
     @Size(min = 9, max = 9, message = "O número do NUIT deve ter 9 caracteres")
     @NotBlank(message = "Campo obrigatorio")
-    private Integer nuit;
+    private String nuit;
 
     @Size(min = 13, max = 13, message = "O número de telefone deve ter no minimo 9 caracteres")
     private String phone;
@@ -52,7 +52,7 @@ public class UserDTO implements Serializable {
     }
 
     public UserDTO(Long id, String firstName, String lastName, String email, String idNumber,Date validate,
-                Integer nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
+                   String nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
                 String username) {
         this.id = id;
         this.firstName = firstName;
@@ -135,11 +135,11 @@ public class UserDTO implements Serializable {
         this.validate = validate;
     }
 
-    public Integer getNuit() {
+    public String getNuit() {
         return nuit;
     }
 
-    public void setNuit(Integer nuit) {
+    public void setNuit(String nuit) {
         this.nuit = nuit;
     }
 

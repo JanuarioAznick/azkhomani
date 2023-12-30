@@ -1,5 +1,8 @@
 package com.az.khomani.dto;
 
+import com.az.khomani.services.validation.UserInsertValid;
+
+@UserInsertValid
 public class UserInsertDTO extends UserDTO{
     private static final long serialVersionUID = 1L;
 
