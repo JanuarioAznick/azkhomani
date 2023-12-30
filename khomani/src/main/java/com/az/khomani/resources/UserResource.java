@@ -2,6 +2,7 @@ package com.az.khomani.resources;
 
 import com.az.khomani.dto.UserDTO;
 import com.az.khomani.dto.UserInsertDTO;
+import com.az.khomani.dto.UserUpdateDTO;
 import com.az.khomani.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,9 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO dto){
-        dto = service.updateUser(id, dto);
-        return ResponseEntity.ok().body(dto);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto){
+        UserDTO newDto = service.updateUser(id, dto);
+        return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping(value = "/{id}")

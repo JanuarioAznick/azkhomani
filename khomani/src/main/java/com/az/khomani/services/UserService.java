@@ -3,6 +3,7 @@ package com.az.khomani.services;
 import com.az.khomani.dto.RoleDTO;
 import com.az.khomani.dto.UserDTO;
 import com.az.khomani.dto.UserInsertDTO;
+import com.az.khomani.dto.UserUpdateDTO;
 import com.az.khomani.entities.Role;
 import com.az.khomani.entities.User;
 import com.az.khomani.repositories.RoleRepository;
@@ -55,7 +56,7 @@ public class UserService {
         return new UserDTO(entity);
     }
     @Transactional
-    public UserDTO updateUser(Long id, UserDTO dto) {
+    public UserDTO updateUser(Long id, UserUpdateDTO dto) {
         try{
             User entity = repository.getOne(id);
             copyDtoToEntity(dto, entity);
