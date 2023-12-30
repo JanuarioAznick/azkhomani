@@ -1,6 +1,10 @@
 package com.az.khomani.dto;
 
 import com.az.khomani.entities.User;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,12 +15,25 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+
+    @Size(min = 3, max = 60, message = "O nome deve ter no mínimo 3 caracteres")
+    @NotBlank(message = "Campo obrigatório")
     private String firstName;
     private String lastName;
+
+    @Email(message = "Introduza um email válido")
     private String email;
+
+    
     private String idNumber;
+
+    @PastOrPresent(message = "A data nao deve ser futura")
     private Date validate;
+
+    @Size(min = 9, max = 9, message = "O número do NUIT deve ter 9 caracteres")
     private Integer nuit;
+
+    @Size(min = 13, max = 13, message = "O número de telefone deve ter no minimo 9 caracteres")
     private String phone;
     private String licenseUrl;
     private String address;
@@ -168,7 +185,7 @@ public class UserDTO implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-    
+
     public Set<RoleDTO> getRoles() {
         return roles;
     }
