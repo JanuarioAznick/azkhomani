@@ -23,22 +23,22 @@ public class User implements Serializable {
     @Column(unique = true)
     private String email;
 
-    @Column(unique = true, length = 13, nullable = false)
+    @Column(unique = true)
     private String idNumber;
-
-    @Column(nullable = false)
     private Date validate;
 
-    @Column(unique = true, length = 9, nullable = false)
+    @Column(unique = true)
     private Integer nuit;
 
-    @Column(unique = true, length = 13)
+    @Column(unique = true)
     private String phone;
 
     @Column(unique = true)
     private String licenseUrl;
     private String address;
     private String imgUrl;
+
+    @Column(unique = true)
     private String alvara;
 
     @Column(unique = true)

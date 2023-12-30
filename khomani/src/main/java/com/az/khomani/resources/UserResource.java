@@ -3,6 +3,7 @@ package com.az.khomani.resources;
 import com.az.khomani.dto.UserDTO;
 import com.az.khomani.dto.UserInsertDTO;
 import com.az.khomani.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +33,7 @@ public class UserResource {
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> saveUser(@RequestBody UserInsertDTO dto){
+    public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserInsertDTO dto){
         UserDTO newDto = service.saveUser(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newDto.getId()).toUri();
@@ -40,7 +41,7 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO dto){
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserDTO dto){
         dto = service.updateUser(id, dto);
         return ResponseEntity.ok().body(dto);
     }
