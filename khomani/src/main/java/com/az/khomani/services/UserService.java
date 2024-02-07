@@ -1,5 +1,7 @@
 package com.az.khomani.services;
 
+import com.az.khomani.config.authentication.AuthenticationRequest;
+import com.az.khomani.config.authentication.AuthenticationResponse;
 import com.az.khomani.dto.RoleDTO;
 import com.az.khomani.dto.UserDTO;
 import com.az.khomani.dto.UserInsertDTO;
@@ -11,28 +13,43 @@ import com.az.khomani.repositories.UserRepository;
 import com.az.khomani.services.exceptions.DatabaseException;
 import com.az.khomani.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
+
+    private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository repository;
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable){
@@ -53,6 +70,12 @@ public class UserService {
         copyDtoToEntity(dto, entity);
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity = repository.save(entity);
+
+        var jwtToken = jwtService.generateToken(entity);
+
+         AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
         return new UserDTO(entity);
     }
     @Transactional
@@ -61,6 +84,12 @@ public class UserService {
             User entity = repository.getOne(id);
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
+
+            var jwtToken = jwtService.generateToken(entity);
+
+            AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
             return new UserDTO(entity);
         }
         catch(EntityNotFoundException e){
@@ -88,11 +117,10 @@ public class UserService {
         entity.setPhone(dto.getPhone());
         entity.setAddress(dto.getAddress());
         entity.setNuit(dto.getNuit());
-        entity.setAlvara(dto.getAlvara());
-        entity.setLicenseUrl(dto.getLicenseUrl());
+        entity.setAlvaral(dto.getAlvaral());
+        entity.setLicense(dto.getLicense());
         entity.setImgUrl(dto.getImgUrl());
         entity.setValidate(dto.getValidate());
-        entity.setUsername(dto.getUsername());
 
         entity.getRoles().clear();
         for(RoleDTO rolDto : dto.getRoles()){
@@ -100,5 +128,31 @@ public class UserService {
             entity.getRoles().add(role);
         }
 
+    }
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request) throws UsernameNotFoundException {
+
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword())
+        );
+
+        var user = repository.findByEmail(request.getEmail());
+        var jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = repository.findByEmail(username);
+        if(user == null) {
+            logger.error("user not found "+username);
+            throw new UsernameNotFoundException("Email not found");
+        }
+        logger.info("user found "+username);
+        return user;
     }
 }

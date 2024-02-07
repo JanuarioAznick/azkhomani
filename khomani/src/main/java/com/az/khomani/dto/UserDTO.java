@@ -2,10 +2,10 @@ package com.az.khomani.dto;
 
 import com.az.khomani.entities.User;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -36,15 +36,12 @@ public class UserDTO implements Serializable {
 
     @Size(min = 13, max = 13, message = "O número de telefone deve ter no minimo 9 caracteres")
     private String phone;
-    private String licenseUrl;
+    private String license;
     private String address;
     private String imgUrl;
 
     @NotBlank(message = "Campo obrigatorio")
-    private String alvara;
-
-    @NotBlank(message = "Campo obrigatorio")
-    private String username;
+    private String alvaral;
 
     private Set<RoleDTO> roles = new HashSet<>();
 
@@ -52,8 +49,7 @@ public class UserDTO implements Serializable {
     }
 
     public UserDTO(Long id, String firstName, String lastName, String email, String idNumber,Date validate,
-                   String nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
-                String username) {
+                   String nuit, String phone, String license, String address, String imgUrl, String alvaral) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -62,11 +58,10 @@ public class UserDTO implements Serializable {
         this.validate = validate;
         this.nuit = nuit;
         this.phone = phone;
-        this.licenseUrl = licenseUrl;
+        this.license = license;
         this.address = address;
         this.imgUrl = imgUrl;
-        this.alvara = alvara;
-        this.username = username;
+        this.alvaral = alvaral;
     }
 
     public UserDTO(User entity) {
@@ -78,11 +73,10 @@ public class UserDTO implements Serializable {
         validate = entity.getValidate();
         nuit = entity.getNuit();
         phone = entity.getPhone();
-        licenseUrl = entity.getLicenseUrl();
+        license = entity.getLicense();
         address = entity.getAddress();
         imgUrl = entity.getImgUrl();
-        alvara = entity.getAlvara();
-        username = entity.getUsername();
+        alvaral = entity.getAlvaral();
 
         entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
     }
@@ -151,12 +145,12 @@ public class UserDTO implements Serializable {
         this.phone = phone;
     }
 
-    public String getLicenseUrl() {
-        return licenseUrl;
+    public String getLicense() {
+        return license;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     public String getAddress() {
@@ -175,20 +169,12 @@ public class UserDTO implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public String getAlvara() {
-        return alvara;
+    public String getAlvaral() {
+        return alvaral;
     }
 
-    public void setAlvara(String alvara) {
-        this.alvara = alvara;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAlvaral(String alvaral) {
+        this.alvaral = alvaral;
     }
 
     public Set<RoleDTO> getRoles() {

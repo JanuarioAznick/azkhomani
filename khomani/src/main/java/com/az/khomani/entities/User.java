@@ -1,17 +1,18 @@
 package com.az.khomani.entities;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements UserDetails, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -34,15 +35,13 @@ public class User implements Serializable {
     private String phone;
 
     @Column(unique = true)
-    private String licenseUrl;
+    private String license;
     private String address;
     private String imgUrl;
 
     @Column(unique = true)
-    private String alvara;
+    private String alvaral;
 
-    @Column(unique = true)
-    private String username;
     private String password;
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
@@ -58,8 +57,8 @@ public class User implements Serializable {
     }
 
     public User(Long id, String firstName, String lastName, String email, String idNumber,Date validate,
-                String nuit, String phone, String licenseUrl, String address, String imgUrl, String alvara,
-                String username, String password) {
+                String nuit, String phone, String license, String address, String imgUrl, String alvaral,
+                String password) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -68,11 +67,10 @@ public class User implements Serializable {
         this.validate = validate;
         this.nuit = nuit;
         this.phone = phone;
-        this.licenseUrl = licenseUrl;
+        this.license = license;
         this.address = address;
         this.imgUrl = imgUrl;
-        this.alvara = alvara;
-        this.username = username;
+        this.alvaral = alvaral;
         this.password = password;
     }
 
@@ -140,12 +138,12 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    public String getLicenseUrl() {
-        return licenseUrl;
+    public String getLicense() {
+        return license;
     }
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     public String getAddress() {
@@ -164,20 +162,12 @@ public class User implements Serializable {
         this.imgUrl = imgUrl;
     }
 
-    public String getAlvara() {
-        return alvara;
+    public String getAlvaral() {
+        return alvaral;
     }
 
-    public void setAlvara(String alvara) {
-        this.alvara = alvara;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAlvaral(String alvaral) {
+        this.alvaral = alvaral;
     }
 
     public String getPassword() {
@@ -212,5 +202,37 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toList());
     }
 }

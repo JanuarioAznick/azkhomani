@@ -1,5 +1,7 @@
 package com.az.khomani.resources;
 
+import com.az.khomani.config.authentication.AuthenticationRequest;
+import com.az.khomani.config.authentication.AuthenticationResponse;
 import com.az.khomani.dto.UserDTO;
 import com.az.khomani.dto.UserInsertDTO;
 import com.az.khomani.dto.UserUpdateDTO;
@@ -15,13 +17,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "/api/users")
 public class UserResource {
 
     @Autowired
     private UserService service;
 
-    @GetMapping
+    @GetMapping(value = "/get")
     public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
         Page<UserDTO> list = service.findAllPaged(pageable);
         return ResponseEntity.ok().body(list);
@@ -33,12 +35,17 @@ public class UserResource {
         return ResponseEntity.ok().body(dto);
     }
 
-    @PostMapping
+    @PostMapping(value = "/register")
     public ResponseEntity<UserDTO> saveUser(@Valid @RequestBody UserInsertDTO dto){
         UserDTO newDto = service.saveUser(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(newDto.getId()).toUri();
         return ResponseEntity.created(uri).body(newDto);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(service.authenticate(request));
     }
 
     @PutMapping(value = "/{id}")
